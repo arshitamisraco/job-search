@@ -1,0 +1,69 @@
+{
+  "titles": {
+    "include": [
+      "Product Designer", "Product Design", "UX Designer", "UX Design",
+      "User Experience Designer", "User Experience Design", "UX/UI Designer",
+      "UI/UX Designer", "UX Researcher", "User Researcher", "UXR",
+      "UX Engineer", "User Experience Engineer", "UX Developer", "UX Architect",
+      "UX Writer", "Content Designer", "Design Engineer", "Design Technologist",
+      "Creative Technologist", "Experience Designer", "Digital Designer",
+      "Interaction Designer", "Interactive Designer", "Visual Designer",
+      "UI Designer", "UI Engineer", "Front End Engineer", "Frontend Engineer",
+      "Front-End Developer", "Design Systems", "UX", "UI"
+    ],
+    "exclude": [
+      "Senior", "Sr.", "Lead", "Director", "VP", "Principal", "Staff",
+      "Head of", "Manager", "Intern", "Graphic", "Marketing"
+    ]
+  },
+  "locations": {
+    "block_countries": [
+      "India", "Poland", "Argentina", "Mexico", "Colombia", "Brazil",
+      "Costa Rica", "Romania", "Hungary", "Ukraine", "Philippines", "Canada",
+      "UK", "Ireland", "Spain", "Germany", "Netherlands", "Australia",
+      "Singapore", "Japan", "China"
+    ],
+    "strict_us_only": false,
+    "unconfirmed_tag": "location unconfirmed",
+    "us_signals": ["united states", "usa", "u.s.", "u.s.a", "us"],
+    "us_state_names": [
+      "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+      "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+      "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+      "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+      "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
+      "New Hampshire", "New Jersey", "New Mexico", "New York",
+      "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+      "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+      "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+      "West Virginia", "Wisconsin", "Wyoming", "District of Columbia"
+    ],
+    "us_state_abbreviations": [
+      "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID",
+      "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS",
+      "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK",
+      "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV",
+      "WI", "WY", "DC"
+    ]
+  },
+  "experience": {
+    "max_years": 2,
+    "not_stated_tag": "YOE not stated"
+  },
+  "workday": {
+    "default_search_text": "design",
+    "page_size": 20,
+    "page_delay_seconds": 1.0,
+    "detail_delay_seconds": 1.0
+  },
+  "smartrecruiters": {
+    "page_size": 100,
+    "detail_delay_seconds": 0.5
+  },
+  "icims": {
+    "detail_delay_seconds": 1.0
+  },
+  "error_handling": {
+    "consecutive_failure_alert_threshold": 5
+  }
+}

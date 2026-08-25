@@ -1,0 +1,156 @@
+[
+  {
+    "name": "Deloitte Digital",
+    "ats": null,
+    "status": "unresolved",
+    "note": "No match on Greenhouse/Lever/Ashby/SmartRecruiters/Workday. Careers hosted at jobsus.deloitte.com / apply.deloitte.com; no ATS vendor signature detected in page source. Likely a custom/in-house system. No JSON endpoint found."
+  },
+  {
+    "name": "Accenture Song",
+    "ats": "workday",
+    "tenant": "accenture",
+    "wdNum": "103",
+    "site": "AccentureCareers",
+    "endpoint": "https://accenture.wd103.myworkdayjobs.com/wday/cxs/accenture/AccentureCareers/jobs",
+    "note": "Accenture Song is a brand within Accenture's single Workday board, not a separate board. Filter with searchText:\"Song\" or an appliedFacet. Unfiltered board total reports 2000, which is Workday's search-result display cap, not the true count.",
+    "confidence": "medium"
+  },
+  {
+    "name": "Slalom",
+    "ats": null,
+    "status": "unresolved",
+    "note": "Careers site (jobs.slalom.com) shows Avature signature. Avature does not expose a standard public JSON postings API. No JSON endpoint found."
+  },
+  {
+    "name": "Publicis Sapient",
+    "ats": null,
+    "status": "unresolved",
+    "note": "Careers site (careers.publicissapient.com) shows iCIMS signature. iCIMS has no simple public JSON postings API. No JSON endpoint found."
+  },
+  {
+    "name": "EPAM",
+    "ats": null,
+    "status": "unresolved",
+    "note": "No match on Greenhouse/Lever/Ashby/SmartRecruiters/Workday. careers.epam.com appears to be a custom/in-house site. Page contained scattered mentions of Oracle/SuccessFactors/Workday but these were not confirmed as EPAM's own ATS (may be job-content noise). No JSON endpoint found."
+  },
+  {
+    "name": "Cognizant",
+    "ats": null,
+    "status": "unresolved",
+    "note": "No match on Greenhouse/Lever/Ashby/SmartRecruiters/Workday. careers.cognizant.com / talent.cognizant.com show no detectable ATS vendor signature; likely a custom/in-house system. No JSON endpoint found."
+  },
+  {
+    "name": "Capgemini",
+    "ats": null,
+    "status": "unresolved",
+    "note": "Careers site (careers.capgemini.com) shows SAP SuccessFactors signature. SuccessFactors does not expose a standard public JSON postings API. No JSON endpoint found."
+  },
+  {
+    "name": "Thoughtworks",
+    "ats": "greenhouse",
+    "slug": "thoughtworks",
+    "endpoint": "https://boards-api.greenhouse.io/v1/boards/thoughtworks/jobs",
+    "confidence": "high"
+  },
+  {
+    "name": "Perficient",
+    "ats": "smartrecruiters",
+    "slug": "Perficient2",
+    "endpoint": "https://api.smartrecruiters.com/v1/companies/Perficient2/postings",
+    "confidence": "high"
+  },
+  {
+    "name": "Smartsheet",
+    "ats": "greenhouse",
+    "slug": "smartsheet",
+    "endpoint": "https://boards-api.greenhouse.io/v1/boards/smartsheet/jobs",
+    "confidence": "high"
+  },
+  {
+    "name": "Avalara",
+    "ats": null,
+    "status": "unresolved",
+    "note": "Careers site (careers.avalara.com, URL pattern /careers-home/jobs/...) confirmed iCIMS via page-source signature. iCIMS has no simple public JSON postings API. No JSON endpoint found."
+  },
+  {
+    "name": "Remitly",
+    "ats": "workday",
+    "tenant": "remitly",
+    "wdNum": "5",
+    "site": "Remitly_Careers",
+    "endpoint": "https://remitly.wd5.myworkdayjobs.com/wday/cxs/remitly/Remitly_Careers/jobs",
+    "confidence": "high"
+  },
+  {
+    "name": "Expedia",
+    "ats": "workday",
+    "tenant": "expedia",
+    "wdNum": "108",
+    "site": "search",
+    "endpoint": "https://expedia.wd108.myworkdayjobs.com/wday/cxs/expedia/search/jobs",
+    "note": "An older wd5 tenant URL also surfaced in search but appeared stale/unavailable; wd108 is confirmed live.",
+    "confidence": "high"
+  },
+  {
+    "name": "Zillow",
+    "ats": "workday",
+    "tenant": "zillow",
+    "wdNum": "5",
+    "site": "Zillow_Group_External",
+    "endpoint": "https://zillow.wd5.myworkdayjobs.com/wday/cxs/zillow/Zillow_Group_External/jobs",
+    "confidence": "high"
+  },
+  {
+    "name": "DocuSign",
+    "ats": null,
+    "status": "unresolved",
+    "note": "Careers site (careers.docusign.com, URL pattern /careers-home/jobs/...) confirmed iCIMS via page-source signature. iCIMS has no simple public JSON postings API. No JSON endpoint found."
+  },
+  {
+    "name": "Qualtrics",
+    "ats": "greenhouse",
+    "slug": "qualtrics",
+    "endpoint": "https://boards-api.greenhouse.io/v1/boards/qualtrics/jobs",
+    "confidence": "high"
+  },
+  
+  {
+    "name": "Workday",
+    "ats": "workday",
+    "tenant": "workday",
+    "wdNum": "5",
+    "site": "Workday",
+    "endpoint": "https://workday.wd5.myworkdayjobs.com/wday/cxs/workday/Workday/jobs",
+    "confidence": "high"
+  },
+  {
+    "name": "Okta",
+    "ats": "greenhouse",
+    "slug": "okta",
+    "endpoint": "https://boards-api.greenhouse.io/v1/boards/okta/jobs",
+    "confidence": "high"
+  },
+  {
+    "name": "Twilio",
+    "ats": "greenhouse",
+    "slug": "twilio",
+    "endpoint": "https://boards-api.greenhouse.io/v1/boards/twilio/jobs",
+    "confidence": "high"
+  },
+  {
+    "name": "Autodesk",
+    "ats": "workday",
+    "tenant": "autodesk",
+    "wdNum": "1",
+    "site": "Ext",
+    "endpoint": "https://autodesk.wd1.myworkdayjobs.com/wday/cxs/autodesk/Ext/jobs",
+    "confidence": "high"
+  },
+  {
+    "name": "ServiceNow",
+    "ats": "smartrecruiters",
+    "slug": "servicenow",
+    "endpoint": "https://api.smartrecruiters.com/v1/companies/servicenow/postings",
+    "confidence": "high"
+  }
+]
