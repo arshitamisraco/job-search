@@ -13,6 +13,8 @@ from email.mime.text import MIMEText
 from pathlib import Path
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 BASE_DIR = Path(__file__).parent
 COMPANIES_FILE = BASE_DIR / "companies.json"
@@ -25,6 +27,17 @@ USER_AGENT = "job-posting-monitor/1.0 (+personal use)"
 
 SESSION = requests.Session()
 SESSION.headers.update({"User-Agent": USER_AGENT})
+# Workday boards in particular can take 50-100+ sequential requests to
+# fully paginate; retry transient timeouts/5xx instead of failing the
+# whole company on one flaky response.
+_retry = Retry(
+    total=3,
+    backoff_factor=1,
+    status_forcelist=[429, 500, 502, 503, 504],
+    allowed_methods=frozenset(["GET", "POST"]),
+)
+SESSION.mount("https://", HTTPAdapter(max_retries=_retry))
+SESSION.mount("http://", HTTPAdapter(max_retries=_retry))
 
 # SmartRecruiters returns ISO country codes; map the ones relevant to our blocklist.
 ISO_COUNTRY_MAP = {
@@ -95,25 +108,29 @@ def title_passes(title, filters):
 
 
 def classify_location(location_text, filters):
-    """Returns (location_or_None, unconfirmed_bool). None means dropped."""
+    """Allowlist, not blocklist: many postings give a bare city ("Chennai") or an
+    ISO-coded location ("Vancouver, BC, CAN") with no country name to block on, so
+    matching known-bad country names misses them. Instead keep only what positively
+    looks US: an explicit US signal/state, or "Remote" with nothing else attached
+    that could be a non-US location.
+    Returns (location_or_None, unconfirmed_bool). None means dropped.
+    """
     loc = (location_text or "").strip()
     if not loc:
-        return loc, False
+        return None, False
     loc_cfg = filters["locations"]
-    for term in loc_cfg["block_countries"]:
-        if word_bounded_search(loc, term):
-            return None, False
-    if "remote" not in loc.lower():
-        return loc, False
     us_signals = (
         loc_cfg.get("us_signals", [])
         + loc_cfg.get("us_state_names", [])
         + loc_cfg.get("us_state_abbreviations", [])
     )
-    confirmed = any(word_bounded_search(loc, s) for s in us_signals)
-    if confirmed:
+    if any(word_bounded_search(loc, s) for s in us_signals):
         return loc, False
-    if loc_cfg.get("strict_us_only", False):
+    if "remote" not in loc.lower():
+        return None, False
+    remainder = re.sub(r"remote", "", loc, flags=re.I)
+    remainder = re.sub(r"[^A-Za-z0-9]+", "", remainder)
+    if remainder:
         return None, False
     return loc, True
 
@@ -284,16 +301,26 @@ def fetch_workday(company_cfg, filters):
         resp = SESSION.post(endpoint, json=body, timeout=REQUEST_TIMEOUT)
         resp.raise_for_status()
         data = resp.json()
-        total = data.get("total", 0)
+        # Workday only reports an accurate "total" on the first page; on later
+        # pages it comes back as 0, so pin it from the first response only.
+        if total is None:
+            total = data.get("total", 0)
         job_postings = data.get("jobPostings", [])
         for job in job_postings:
             external_path = job.get("externalPath", "")
             job_id = external_path.rstrip("/").split("/")[-1] or external_path
+            # Some tenants (e.g. Accenture) omit locationsText entirely; the
+            # location then shows up as the last bulletFields entry instead.
+            location = job.get("locationsText") or ""
+            if not location:
+                bullets = job.get("bulletFields") or []
+                if len(bullets) > 1:
+                    location = bullets[-1]
             postings.append({
                 "company": company_cfg["name"],
                 "job_id": job_id,
                 "title": job.get("title", ""),
-                "location": job.get("locationsText", ""),
+                "location": location,
                 "url": f"https://{tenant}.wd{wd_num}.myworkdayjobs.com/{site}{external_path}",
                 "_description": None,
                 "_external_path": external_path,
@@ -392,23 +419,29 @@ def get_description(company_cfg, posting, filters):
 # ---------------------------------------------------------------------------
 
 def process_company(company_cfg, filters, seen):
-    """Returns (matches, error_or_None)."""
+    """Returns (matches, counts, error_or_None). counts has fetched/passed_title/
+    passed_location/passed_yoe funnel totals regardless of whether error is set."""
     name = company_cfg["name"]
+    counts = {"fetched": 0, "passed_title": 0, "passed_location": 0, "passed_yoe": 0}
     try:
         raw_postings = fetch_postings(company_cfg, filters)
     except Exception as e:
-        return None, str(e)
+        return None, counts, str(e)
+
+    counts["fetched"] = len(raw_postings)
+
+    title_passed = [p for p in raw_postings if title_passes(p["title"], filters)]
+    counts["passed_title"] = len(title_passed)
 
     filtered = []
-    for p in raw_postings:
-        if not title_passes(p["title"], filters):
-            continue
+    for p in title_passed:
         location, unconfirmed = classify_location(p["location"], filters)
         if location is None:
             continue
         p["location"] = location
         p["location_unconfirmed"] = unconfirmed
         filtered.append(p)
+    counts["passed_location"] = len(filtered)
 
     seen_ids = set(seen.get(name, []))
     candidates = [p for p in filtered if p["job_id"] not in seen_ids]
@@ -426,8 +459,36 @@ def process_company(company_cfg, filters, seen):
             continue
         p["yoe_not_stated"] = not stated
         matches.append(p)
+    counts["passed_yoe"] = len(matches)
 
-    return matches, None
+    return matches, counts, None
+
+
+def format_funnel_table(funnel):
+    """funnel: list of (company_name, counts_dict, error_or_None)."""
+    headers = ["company", "fetched", "passed title", "passed location", "passed YOE"]
+    rows = []
+    for name, counts, error in funnel:
+        if error is not None:
+            rows.append([name, "FETCH FAILED", "-", "-", "-"])
+            continue
+        rows.append([
+            name,
+            str(counts["fetched"]),
+            str(counts["passed_title"]),
+            str(counts["passed_location"]),
+            str(counts["passed_yoe"]),
+        ])
+
+    widths = [
+        max(len(headers[i]), *(len(r[i]) for r in rows)) if rows else len(headers[i])
+        for i in range(len(headers))
+    ]
+    lines = ["  ".join(h.ljust(widths[i]) for i, h in enumerate(headers))]
+    lines.append("  ".join("-" * w for w in widths))
+    for r in rows:
+        lines.append("  ".join(c.ljust(widths[i]) for i, c in enumerate(r)))
+    return "\n".join(lines)
 
 
 def build_email(results_by_company, unreachable, loud_failures, filters):
@@ -499,6 +560,7 @@ def main():
     results_by_company = {}
     unreachable = []
     loud_failures = []
+    funnel = []
 
     for company_cfg in companies:
         name = company_cfg["name"]
@@ -506,7 +568,8 @@ def main():
             continue
 
         log(f"fetching {name}...")
-        matches, error = process_company(company_cfg, filters, seen)
+        matches, counts, error = process_company(company_cfg, filters, seen)
+        funnel.append((name, counts, error))
 
         if error is not None:
             log(f"  FAILED: {error}")
@@ -522,6 +585,10 @@ def main():
             seen.setdefault(name, [])
             for m in matches:
                 seen[name].append(m["job_id"])
+
+    if args.dry_run:
+        print(format_funnel_table(funnel))
+        print()
 
     total_new = sum(len(v) for v in results_by_company.values())
 

@@ -17,13 +17,6 @@
     ]
   },
   "locations": {
-    "block_countries": [
-      "India", "Poland", "Argentina", "Mexico", "Colombia", "Brazil",
-      "Costa Rica", "Romania", "Hungary", "Ukraine", "Philippines", "Canada",
-      "UK", "Ireland", "Spain", "Germany", "Netherlands", "Australia",
-      "Singapore", "Japan", "China"
-    ],
-    "strict_us_only": false,
     "unconfirmed_tag": "location unconfirmed",
     "us_signals": ["united states", "usa", "u.s.", "u.s.a", "us"],
     "us_state_names": [
