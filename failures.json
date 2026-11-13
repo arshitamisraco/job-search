@@ -5,11 +5,11 @@
   "Okta": 0,
   "Perficient": 0,
   "Qualtrics": 0,
-  "Remitly": 0,
+  "Remitly": 1,
   "ServiceNow": 0,
   "Smartsheet": 0,
   "Thoughtworks": 0,
   "Twilio": 0,
-  "Workday": 0,
-  "Zillow": 0
+  "Workday": 1,
+  "Zillow": 1
 }
