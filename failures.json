@@ -1,15 +1,15 @@
 {
-  "Accenture Song": 23,
-  "Autodesk": 0,
-  "Expedia": 0,
+  "Accenture Song": 24,
+  "Autodesk": 1,
+  "Expedia": 1,
   "Okta": 0,
   "Perficient": 0,
   "Qualtrics": 0,
-  "Remitly": 9,
+  "Remitly": 10,
   "ServiceNow": 0,
   "Smartsheet": 0,
-  "Thoughtworks": 4,
+  "Thoughtworks": 5,
   "Twilio": 0,
-  "Workday": 22,
-  "Zillow": 11
+  "Workday": 23,
+  "Zillow": 12
 }
